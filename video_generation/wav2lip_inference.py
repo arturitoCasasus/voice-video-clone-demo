@@ -53,8 +53,8 @@ def main():
     print("2. Download the pretrained model (e.g., wav2lip_gan.pth) and place it in Wav2Lip/checkpoints/")
     print("3. Install the required dependencies (see Wav2Lip/README.md)")
     print("4. Then run the inference script provided by Wav2Lip with your arguments.")
-    print("\nExample command:")
-    print(f"python Wav2Lip/inference.py --checkpoint_path {args.checkpoint_path} --face {args.face} --audio {args.audio} --outfile {args.output}")
+    print("\nExample command (using the provided avatar):")
+    print(f"python Wav2Lip/inference.py --checkpoint_path {args.checkpoint_path} --face demo/avatar.jpg --audio audio/tortoise_output.wav --outfile results/wav2lip_output.mp4")
 
 if __name__ == "__main__":
     main()

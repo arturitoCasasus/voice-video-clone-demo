@@ -13,6 +13,7 @@ This repository contains examples and scripts for free, open-source voice clonin
 - [Demo](#demo)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Video Duration Constraints](#video-duration-constraints)
 
 ## Voice Cloning
 
@@ -48,15 +49,15 @@ SadTalker aims to generate talking faces from audio and a single face image.
 
 ## Demo
 
-We provide a demo that uses a placeholder photo and a test text to generate a cloned voice and a talking head video.
+We provide a demo that uses the provided avatar image and a test text to generate a cloned voice and a talking head video.
 
-**Note**: Replace `demo/photo.jpg` with your own photo and `demo/text.txt` with your desired text.
+**Note**: The demo uses `demo/avatar.jpg` (provided by the user) as the avatar reference. Replace `demo/text.txt` with your desired text.
 
 ### Steps to run the demo:
 
 1. Install the required dependencies (see [Installation](#installation)).
-2. Run the voice cloning script to generate audio from text using your photo's voice (or a sample voice).
-3. Use the generated audio and your photo to create a talking head video.
+2. Run the voice cloning script to generate audio from text (ensure the audio duration matches the desired video length, see [Video Duration Constraints](#video-duration-constraints)).
+3. Use the generated audio and the avatar image to create a talking head video.
 
 ## Installation
 
@@ -133,37 +134,59 @@ cd ..
 
 ```bash
 # From the root of this repository
-python voice_cloning/tortoise_tts_clone.py --text "Hello, this is a test." --output audio/tortoise_output.wav
+python voice_cloning/tortoise_tts_clone.py --text "Your text here." --output audio/tortoise_output.wav
 ```
 
 ### Voice Cloning with Coqui TTS
 
 ```bash
-python voice_cloning/coqui_tts_clone.py --text "Hello, this is a test." --output audio/coqui_output.wav --speaker_wav "path/to/reference/speaker.wav"
+python voice_cloning/coqui_tts_clone.py --text "Your text here." --output audio/coqui_output.wav --speaker_wav "path/to/reference/speaker.wav"
 ```
 
 ### Talking Head Generation with Wav2Lip
 
 ```bash
-python video_generation/wav2lip_inference.py --face "demo/photo.jpg" --audio "audio/tortoise_output.wav" --output "results/wav2lip_output.mp4"
+python video_generation/wav2lip_inference.py --face "demo/avatar.jpg" --audio "audio/tortoise_output.wav" --output "results/wav2lip_output.mp4"
 ```
 
 ### Talking Head Generation with SadTalker
 
 ```bash
-python video_generation/sadtalker_inference.py --driven_audio "audio/tortoise_output.wav" --source_image "demo/photo.jpg" --output_dir "results/sadtalker_output/"
+python video_generation/sadtalker_inference.py --driven_audio "audio/tortoise_output.wav" --source_image "demo/avatar.jpg" --output_dir "results/sadtalker_output/"
 ```
 
 ## Demo Files
 
-- `demo/photo.jpg`: Placeholder for your photo.
-- `demo/text.txt`: Sample text for voice cloning.
+- `demo/avatar.jpg`: The provided avatar image to be used as the talking head.
+- `demo/text.txt`: Sample text for voice cloning (edit to your desired content).
+
+## Video Duration Constraints
+
+The final video must be between **3 and 10 minutes** long.
+
+To achieve this:
+
+1. **Adjust the input text length**: The speaking rate varies, but a rough estimate is 130-150 words per minute for clear speech. For a 3‑minute video aim for ~400 words; for a 10‑minute video aim for ~1300 words.
+2. **Control the TTS generation**:
+   - With Tortoise-TTS, you can generate longer passages directly.
+   - With Coqui TTS (XTTS v2), you can also pass long texts.
+3. **If needed, concatenate audio clips**: Generate multiple clips and concatenate them with FFmpeg or Audacity to reach the exact duration.
+4. **Trim or loop**: If the generated audio is too short, you can loop a segment (with slight variations to avoid monotony) or add pauses. If too long, trim to the desired length.
+5. **Verify duration**: Use `ffprobe` to check audio length:
+   ```bash
+   ffprobe -i audio/output.wav -show_entries format=duration -v quiet -of csv="p=0"
+   ```
+   Then ensure the talking‑head video will have the same duration (the tools generally preserve audio length).
+
+### Example: Generating a ~5‑minute narration (~650 words)
+
+Edit `demo/text.txt` with your desired script (around 650 words). Then run the cloning script and proceed to video generation.
 
 ## Notes
 
 - This repository is for educational purposes. Always respect privacy and copyright when using someone's voice or image.
 - The quality of the output depends on the quality of the input data and the pretrained models used.
-- For best results, use a clear front-facing photo and a clean audio recording.
+- For best results, use a clear front-facing photo (the provided avatar) and a clean audio recording.
 
 ## License
 

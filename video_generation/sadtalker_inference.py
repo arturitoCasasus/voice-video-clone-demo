@@ -46,8 +46,8 @@ def main():
     print("2. Download the pretrained models (e.g., mapper.pth, checkpoint.pth) and place them in SadTalker/checkpoints/")
     print("3. Install the required dependencies (see SadTalker/README.md)")
     print("4. Then run the inference script provided by SadTalker with your arguments.")
-    print("\nExample command:")
-    print(f"python SadTalker/inference.py --driven_audio {args.driven_audio} --source_image {args.source_image} --result_dir {args.result_dir} --preprocess {args.preprocess} --still_mode {args.still_mode} --use_enhancer {args.use_enhancer} --batch_size {args.batch_size} --size {args.size} --expression_scale {args.expression_scale}")
+    print("\nExample command (using the provided avatar):")
+    print(f"python SadTalker/inference.py --driven_audio {args.driven_audio} --source_image demo/avatar.jpg --result_dir {args.result_dir} --preprocess {args.preprocess} --still_mode {args.still_mode} --use_enhancer {args.use_enhancer} --batch_size {args.batch_size} --size {args.size} --expression_scale {args.expression_scale}")
 
 if __name__ == "__main__":
     main()
