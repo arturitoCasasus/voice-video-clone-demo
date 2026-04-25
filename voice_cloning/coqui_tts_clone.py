@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """
-Example script for voice cloning using Coqui TTS.
+Example script for voice cloning using Coqui TTS (XTTS v2).
 """
 
 import argparse
 import os
 import sys
+import torch
 
 def main():
     parser = argparse.ArgumentParser(description="Clone voice using Coqui TTS")
@@ -14,7 +15,13 @@ def main():
     parser.add_argument("--speaker_wav", type=str, required=True, help="Path to the speaker reference audio file")
     parser.add_argument("--model_name", type=str, default="tts_models/multilingual/multi-dataset/xtts_v2", help="Model name to use")
     parser.add_argument("--language", type=str, default="en", help="Language of the text")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
     args = parser.parse_args()
+
+    # Set seed if provided
+    if args.seed is not None:
+        torch.manual_seed(args.seed)
+        torch.cuda.manual_seed_all(args.seed)
 
     # Check if TTS is available
     try:

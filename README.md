@@ -7,6 +7,7 @@ This repository contains examples and scripts for free, open-source voice clonin
 - [Voice Cloning](#voice-cloning)
   - [Tortoise-TTS](#tortoise-tts)
   - [Coqui TTS](#coqui-tts)
+  - [RVC (Retrieval-based Voice Conversion)](#rvc-retrieval-based-voice-conversion)
 - [Talking Head Generation](#talking-head-generation)
   - [Wav2Lip](#wav2lip)
   - [SadTalker](#sadtalker)
@@ -14,6 +15,7 @@ This repository contains examples and scripts for free, open-source voice clonin
 - [Installation](#installation)
 - [Usage](#usage)
 - [Video Duration Constraints](#video-duration-constraints)
+- [Getting Good Reference Audio](#getting-good-reference-audio)
 
 ## Voice Cloning
 
@@ -30,6 +32,13 @@ Coqui TTS is a deep learning toolkit for Text-to-Speech, battle-tested in resear
 
 - Repository: https://github.com/coqui-ai/TTS
 - License: MPL-2.0
+
+### RVC (Retrieval-based Voice Conversion)
+
+RVC is an advanced voice conversion framework that uses retrieval-based methods for high-quality voice cloning. It requires training a model with your reference audio first, then can convert any audio to sound like the reference voice.
+
+- Repository: https://github.com/RVC-Project/Retrieval-based-Voice-Conversion
+- License: MIT License
 
 ## Talking Head Generation
 
@@ -66,6 +75,7 @@ We provide a demo that uses the provided avatar image and a test text to generat
 - Python 3.8+
 - Git
 - FFmpeg (for video processing)
+- CUDA-compatible GPU (recommended for faster processing, but CPU-only modes are available)
 
 ### Cloning the repository
 
@@ -101,6 +111,14 @@ pip install tortoise-tts
 pip install TTS
 ```
 
+##### RVC
+
+```bash
+pip install rvc-python
+# You also need to install the RVC training tools separately if you want to train models
+# Follow instructions at: https://github.com/RVC-Project/Retrieval-based-Voice-Conversion
+```
+
 ##### Wav2Lip
 
 ```bash
@@ -134,13 +152,21 @@ cd ..
 
 ```bash
 # From the root of this repository
-python voice_cloning/tortoise_tts_clone.py --text "Your text here." --output audio/tortoise_output.wav
+python voice_cloning/tortoise_tts_clone.py --text "Your text here." --output audio/tortoise_output.wav --reference_wav "path/to/reference/speaker.wav"
 ```
 
 ### Voice Cloning with Coqui TTS
 
 ```bash
 python voice_cloning/coqui_tts_clone.py --text "Your text here." --output audio/coqui_output.wav --speaker_wav "path/to/reference/speaker.wav"
+```
+
+### Voice Cloning with RVC
+
+```bash
+# Note: This requires a pre-trained RVC model. You must first train a model using your reference audio.
+# See https://github.com/RVC-Project/Retrieval-based-Voice-Conversion for training instructions.
+python voice_cloning/rvc_clone.py --text "Your text here." --output audio/rvc_output.wav --reference_wav "path/to/reference/speaker.wav" --model_path "path/to/trained/model.pth" [--index_path "path/to/index/file"] [--f0_up_key 0] [--index_rate 0.75]
 ```
 
 ### Talking Head Generation with Wav2Lip
@@ -170,6 +196,7 @@ To achieve this:
 2. **Control the TTS generation**:
    - With Tortoise-TTS, you can generate longer passages directly.
    - With Coqui TTS (XTTS v2), you can also pass long texts.
+   - With RVC, you can generate base audio with any TTS method and then convert it.
 3. **If needed, concatenate audio clips**: Generate multiple clips and concatenate them with FFmpeg or Audacity to reach the exact duration.
 4. **Trim or loop**: If the generated audio is too short, you can loop a segment (with slight variations to avoid monotony) or add pauses. If too long, trim to the desired length.
 5. **Verify duration**: Use `ffprobe` to check audio length:
@@ -182,11 +209,29 @@ To achieve this:
 
 Edit `demo/text.txt` with your desired script (around 650 words). Then run the cloning script and proceed to video generation.
 
+## Getting Good Reference Audio
+
+For best voice cloning results, follow these guidelines for your reference audio:
+
+1. **Quality**: Use a clean recording with minimal background noise, reverberation, or distortions.
+2. **Length**: Provide at least 10-30 seconds of clear speech. Longer durations (1-2 minutes) can improve results for Tortoise-TTS and RVC.
+3. **Consistency**: The speaker should maintain a consistent tone, pace, and vocal characteristics throughout the recording.
+4. **Content**: Use natural speech (reading a paragraph, speaking freely) rather than isolated words or sentences.
+5. **Format**: Use WAV format with 16-bit or 24-bit depth and sample rate of 22050Hz or higher (most tools will resample as needed).
+6. **Avoid**: Music, multiple speakers, excessive laughter, shouting, or whispering unless you specifically want to clone those styles.
+
+### Obtaining Reference Audio
+
+- Extract from existing clean recordings (podcasts, audiobooks, lectures)
+- Record specifically for this purpose using a good microphone in a quiet environment
+- Use online sources with clear speech (ensure you have rights to use the voice)
+
 ## Notes
 
 - This repository is for educational purposes. Always respect privacy and copyright when using someone's voice or image.
 - The quality of the output depends on the quality of the input data and the pretrained models used.
 - For best results, use a clear front-facing photo (the provided avatar) and a clean audio recording.
+- RVC requires training a model with your reference audio first, which can take time but yields high-quality results.
 
 ## License
 
@@ -198,3 +243,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - Coqui TTS: https://github.com/coqui-ai/TTS
 - Wav2Lip: https://github.com/Rudrabha/Wav2Lip
 - SadTalker: https://github.com/OpenTalker/SadTalker
+- RVC: https://github.com/RVC-Project/Retrieval-based-Voice-Conversion
