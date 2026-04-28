@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+
+# Private identity assets: never commit real faces/voices
+assets/private/
+demo/private/
+private/
+*.wav
+*.mp3
+*.ogg
+*.m4a
+*.flac
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.avi
+
+# Generated outputs and Kaggle downloads
+outputs/
+results/
+kaggle-runs/
+output*/
+error*/
+*.log
+
+# Keep placeholder/demo text files tracked
+!demo/*.txt
+!demo/*.md
+!demo/*.svg
+!docs/*.md
+!notebooks/*.ipynb
+!kernels/**/*.py
+!kernels/**/*.json

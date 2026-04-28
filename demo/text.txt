@@ -1,1 +1,1 @@
-Hello, this is a test of voice cloning and talking head generation.
+Hello, this is a safe demo text for testing a cloned voice and talking-head pipeline. Replace this with your own script when running the notebooks.
