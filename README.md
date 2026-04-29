@@ -15,16 +15,24 @@ After testing several approaches, the best working talking-head strategies are:
 
 Functional Kaggle notebooks are in [`notebooks/`](notebooks/):
 
-- [`ditto_exp065_kaggle.ipynb`](notebooks/ditto_exp065_kaggle.ipynb): notebook for the best Ditto parameter strategy.
-- [`musetalk_fullfix_kaggle.ipynb`](notebooks/musetalk_fullfix_kaggle.ipynb): notebook for the MuseTalk v1.5 full dependency/model setup.
-- [`qwen_icl_sadtalker_long_kaggle.ipynb`](notebooks/qwen_icl_sadtalker_long_kaggle.ipynb): end-to-end voice clone + talking-head video.
+- [`voicebox_candidates_kaggle.ipynb`](notebooks/voicebox_candidates_kaggle.ipynb): generate and compare voice candidates before video.
+- [`voicebox_chatterbox_wav2lip_kaggle.ipynb`](notebooks/voicebox_chatterbox_wav2lip_kaggle.ipynb): animate the chosen Chatterbox/Voicebox audio with Wav2Lip.
+- [`qwen_icl_wav2lip_kaggle.ipynb`](notebooks/qwen_icl_wav2lip_kaggle.ipynb): Qwen3-TTS ICL voice clone + Wav2Lip.
+- [`qwen_icl_sadtalker_long_kaggle.ipynb`](notebooks/qwen_icl_sadtalker_long_kaggle.ipynb): Qwen3-TTS ICL voice clone + longer SadTalker video.
 - [`sadtalker_from_audio_kaggle.ipynb`](notebooks/sadtalker_from_audio_kaggle.ipynb): animate a portrait from an existing audio file.
+- [`ditto_exp065_kaggle.ipynb`](notebooks/ditto_exp065_kaggle.ipynb): best Ditto parameter strategy.
+- [`musetalk_fullfix_kaggle.ipynb`](notebooks/musetalk_fullfix_kaggle.ipynb): MuseTalk v1.5 full dependency/model setup.
 
 Script templates are in [`kernels/`](kernels/):
 
+- [`kernels/voicebox_candidates/run.py`](kernels/voicebox_candidates/run.py)
+- [`kernels/voicebox_chatterbox_wav2lip/run.py`](kernels/voicebox_chatterbox_wav2lip/run.py)
+- [`kernels/qwen_icl_wav2lip/run.py`](kernels/qwen_icl_wav2lip/run.py)
+- [`kernels/qwen_sadtalker_long/run.py`](kernels/qwen_sadtalker_long/run.py)
 - [`kernels/ditto_exp065/run.py`](kernels/ditto_exp065/run.py)
 - [`kernels/musetalk_fullfix/run.py`](kernels/musetalk_fullfix/run.py)
-- [`kernels/qwen_sadtalker_long/run.py`](kernels/qwen_sadtalker_long/run.py)
+
+Run guide: [`docs/how-to-run-working-notebooks.md`](docs/how-to-run-working-notebooks.md).
 
 Detailed research notes: [`docs/research/talking-head-lipsync-research.md`](docs/research/talking-head-lipsync-research.md).
 
@@ -38,11 +46,24 @@ reference_qwen_icl.wav
 reference_text.txt
 ```
 
-For Ditto, MuseTalk and the SadTalker-only notebook:
+For Ditto, MuseTalk, SadTalker-only and other audio-driven talking-head notebooks:
 
 ```text
 portrait.jpg
 audio.wav
+```
+
+For Voicebox candidate generation:
+
+```text
+reference_voice.wav
+```
+
+For Voicebox/Chatterbox + Wav2Lip:
+
+```text
+portrait.jpg
+voicebox_chatterbox_turbo_en.wav
 ```
 
 Do **not** commit these assets. `.gitignore` excludes common audio/video outputs and private asset folders.
@@ -118,9 +139,13 @@ ffmpeg -y -i input.mp4 \
 ```text
 demo/                         Safe placeholder assets/text only
 notebooks/                    Functional Kaggle notebooks
+kernels/voicebox_candidates/  Voice candidate generation script + metadata template
+kernels/voicebox_chatterbox_wav2lip/  Voicebox audio + Wav2Lip script + metadata template
+kernels/qwen_icl_wav2lip/     Qwen ICL + Wav2Lip script + metadata template
 kernels/ditto_exp065/         Best Ditto talking-head script + metadata template
 kernels/musetalk_fullfix/     Working MuseTalk v1.5 script + metadata template
 kernels/qwen_sadtalker_long/  Kaggle script + metadata template
+docs/how-to-run-working-notebooks.md  Run guide for all working notebooks
 docs/research/                Research notes from working runs
 docs/lessons-learned.md       Practical notes from real runs
 voice_cloning/                Older local examples

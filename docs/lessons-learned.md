@@ -6,10 +6,29 @@ This repo was updated after several real Kaggle runs combining voice cloning and
 
 - **Best talking-head baseline:** Ditto with expression movement scaled to `0.65`, while keeping pose/head movement at `1.0`.
 - **Best modern lip-sync alternative:** MuseTalk v1.5 with Python 3.10, pinned MMLab stack and verified model assets.
-- **Voice cloning:** `Qwen/Qwen3-TTS-12Hz-0.6B-Base` via `qwen-tts`, using ICL mode.
-- **Reference mode:** `x_vector_only_mode=False` with exact `ref_text` matching `ref_audio`.
+- **Best robust long-form path:** Qwen3-TTS ICL voice clone + SadTalker.
+- **Best Qwen voice strategy:** `Qwen/Qwen3-TTS-12Hz-0.6B-Base` using ICL mode with exact `ref_text`.
+- **Useful voice exploration:** Voicebox/Chatterbox candidate generation before choosing which audio to animate.
 - **Stable fallback talking head:** SadTalker can work on Kaggle after compatibility patches.
+- **Quick lip-sync baseline:** Wav2Lip works, but face realism is limited compared with Ditto/MuseTalk.
 - **Long video delivery:** recode the final MP4 to H.264/yuv420p for Telegram/browser compatibility.
+
+## Voicebox / Chatterbox notes
+
+Voicebox-style candidate generation is useful as a separate first step.
+
+Working strategy:
+
+- Use a private `reference_voice.wav` dataset.
+- Generate multiple audio candidates.
+- Listen manually and promote only the best candidate into a video pipeline.
+- Keep generated candidate audio outside git.
+
+Reflection:
+
+- Chatterbox Turbo produced a usable English candidate.
+- The downstream Wav2Lip video worked, but Wav2Lip limited visual quality.
+- The main value is fast voice candidate comparison.
 
 ## Qwen TTS notes
 
