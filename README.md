@@ -4,20 +4,29 @@ Safe, reproducible examples for voice cloning and talking-head generation with o
 
 This repository intentionally contains **no real personal face images, voice recordings, or generated identity outputs**. Bring your own private assets when running the notebooks.
 
-## Current recommended pipeline
+## Current recommended pipelines
 
-After testing several approaches, the most reliable Kaggle path in this repo is:
+After testing several approaches, the best working talking-head strategies are:
 
-1. **Qwen3-TTS 0.6B Base ICL** for voice cloning.
-2. **SadTalker** for talking-head generation from a single portrait.
-3. **FFmpeg H.264 recoding** for Telegram/browser-compatible MP4 delivery.
+1. **Ditto, expression scale 0.65**: current best visual/lip-sync baseline from `portrait.jpg` + `audio.wav`.
+2. **MuseTalk v1.5 full asset setup**: working modern lip-sync alternative on Kaggle GPU.
+3. **SadTalker**: stable fallback, especially useful when robustness matters more than mouth realism.
+4. **FFmpeg H.264/yuv420p recoding** for Telegram/browser-compatible MP4 delivery.
 
 Functional Kaggle notebooks are in [`notebooks/`](notebooks/):
 
+- [`ditto_exp065_kaggle.ipynb`](notebooks/ditto_exp065_kaggle.ipynb): notebook for the best Ditto parameter strategy.
+- [`musetalk_fullfix_kaggle.ipynb`](notebooks/musetalk_fullfix_kaggle.ipynb): notebook for the MuseTalk v1.5 full dependency/model setup.
 - [`qwen_icl_sadtalker_long_kaggle.ipynb`](notebooks/qwen_icl_sadtalker_long_kaggle.ipynb): end-to-end voice clone + talking-head video.
 - [`sadtalker_from_audio_kaggle.ipynb`](notebooks/sadtalker_from_audio_kaggle.ipynb): animate a portrait from an existing audio file.
 
-The corresponding script template is in [`kernels/qwen_sadtalker_long/run.py`](kernels/qwen_sadtalker_long/run.py).
+Script templates are in [`kernels/`](kernels/):
+
+- [`kernels/ditto_exp065/run.py`](kernels/ditto_exp065/run.py)
+- [`kernels/musetalk_fullfix/run.py`](kernels/musetalk_fullfix/run.py)
+- [`kernels/qwen_sadtalker_long/run.py`](kernels/qwen_sadtalker_long/run.py)
+
+Detailed research notes: [`docs/research/talking-head-lipsync-research.md`](docs/research/talking-head-lipsync-research.md).
 
 ## Private assets expected
 
@@ -29,7 +38,7 @@ reference_qwen_icl.wav
 reference_text.txt
 ```
 
-For the SadTalker-only notebook:
+For Ditto, MuseTalk and the SadTalker-only notebook:
 
 ```text
 portrait.jpg
@@ -109,7 +118,10 @@ ffmpeg -y -i input.mp4 \
 ```text
 demo/                         Safe placeholder assets/text only
 notebooks/                    Functional Kaggle notebooks
+kernels/ditto_exp065/         Best Ditto talking-head script + metadata template
+kernels/musetalk_fullfix/     Working MuseTalk v1.5 script + metadata template
 kernels/qwen_sadtalker_long/  Kaggle script + metadata template
+docs/research/                Research notes from working runs
 docs/lessons-learned.md       Practical notes from real runs
 voice_cloning/                Older local examples
 video_generation/             Older local examples

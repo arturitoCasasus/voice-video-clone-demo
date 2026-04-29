@@ -1,0 +1,17 @@
+{
+  "id": "<kaggle-username>/ditto-exp065-demo",
+  "title": "Ditto Exp065 Talking Head Demo",
+  "code_file": "run.py",
+  "language": "python",
+  "kernel_type": "script",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_tpu": false,
+  "enable_internet": true,
+  "dataset_sources": [
+    "<kaggle-username>/<private-assets-dataset>"
+  ],
+  "competition_sources": [],
+  "kernel_sources": [],
+  "model_sources": []
+}
