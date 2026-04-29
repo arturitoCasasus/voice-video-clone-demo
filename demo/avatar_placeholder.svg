@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="1280" viewBox="0 0 960 1280">
+  <rect width="960" height="1280" fill="#eef2f7"/>
+  <circle cx="480" cy="410" r="170" fill="#cbd5e1"/>
+  <rect x="245" y="655" width="470" height="360" rx="170" fill="#cbd5e1"/>
+  <text x="480" y="1115" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" fill="#475569">Replace with your own portrait.jpg</text>
+</svg>

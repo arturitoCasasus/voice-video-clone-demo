@@ -1,246 +1,161 @@
 # Voice and Video Cloning Demo
 
-This repository contains examples and scripts for free, open-source voice cloning and talking head generation.
+Safe, reproducible examples for voice cloning and talking-head generation with open-source tools.
 
-## Contents
+This repository intentionally contains **no real personal face images, voice recordings, or generated identity outputs**. Bring your own private assets when running the notebooks.
 
-- [Voice Cloning](#voice-cloning)
-  - [Tortoise-TTS](#tortoise-tts)
-  - [Coqui TTS](#coqui-tts)
-  - [RVC (Retrieval-based Voice Conversion)](#rvc-retrieval-based-voice-conversion)
-- [Talking Head Generation](#talking-head-generation)
-  - [Wav2Lip](#wav2lip)
-  - [SadTalker](#sadtalker)
-- [Demo](#demo)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Video Duration Constraints](#video-duration-constraints)
-- [Getting Good Reference Audio](#getting-good-reference-audio)
+## Current recommended pipelines
 
-## Voice Cloning
+After testing several approaches, the best working talking-head strategies are:
 
-### Tortoise-TTS
+1. **Ditto, expression scale 0.65**: current best visual/lip-sync baseline from `portrait.jpg` + `audio.wav`.
+2. **MuseTalk v1.5 full asset setup**: working modern lip-sync alternative on Kaggle GPU.
+3. **SadTalker**: stable fallback, especially useful when robustness matters more than mouth realism.
+4. **FFmpeg H.264/yuv420p recoding** for Telegram/browser-compatible MP4 delivery.
 
-Tortoise-TTS is a multi-voice TTS system trained with an emphasis on quality.
+Functional Kaggle notebooks are in [`notebooks/`](notebooks/):
 
-- Repository: https://github.com/neonbjb/tortoise-tts
-- License: Apache License 2.0
+- [`voicebox_candidates_kaggle.ipynb`](notebooks/voicebox_candidates_kaggle.ipynb): generate and compare voice candidates before video.
+- [`voicebox_chatterbox_wav2lip_kaggle.ipynb`](notebooks/voicebox_chatterbox_wav2lip_kaggle.ipynb): animate the chosen Chatterbox/Voicebox audio with Wav2Lip.
+- [`qwen_icl_wav2lip_kaggle.ipynb`](notebooks/qwen_icl_wav2lip_kaggle.ipynb): Qwen3-TTS ICL voice clone + Wav2Lip.
+- [`qwen_icl_sadtalker_long_kaggle.ipynb`](notebooks/qwen_icl_sadtalker_long_kaggle.ipynb): Qwen3-TTS ICL voice clone + longer SadTalker video.
+- [`sadtalker_from_audio_kaggle.ipynb`](notebooks/sadtalker_from_audio_kaggle.ipynb): animate a portrait from an existing audio file.
+- [`ditto_exp065_kaggle.ipynb`](notebooks/ditto_exp065_kaggle.ipynb): best Ditto parameter strategy.
+- [`musetalk_fullfix_kaggle.ipynb`](notebooks/musetalk_fullfix_kaggle.ipynb): MuseTalk v1.5 full dependency/model setup.
 
-### Coqui TTS
+Script templates are in [`kernels/`](kernels/):
 
-Coqui TTS is a deep learning toolkit for Text-to-Speech, battle-tested in research and production.
+- [`kernels/voicebox_candidates/run.py`](kernels/voicebox_candidates/run.py)
+- [`kernels/voicebox_chatterbox_wav2lip/run.py`](kernels/voicebox_chatterbox_wav2lip/run.py)
+- [`kernels/qwen_icl_wav2lip/run.py`](kernels/qwen_icl_wav2lip/run.py)
+- [`kernels/qwen_sadtalker_long/run.py`](kernels/qwen_sadtalker_long/run.py)
+- [`kernels/ditto_exp065/run.py`](kernels/ditto_exp065/run.py)
+- [`kernels/musetalk_fullfix/run.py`](kernels/musetalk_fullfix/run.py)
 
-- Repository: https://github.com/coqui-ai/TTS
-- License: MPL-2.0
+Run guide: [`docs/how-to-run-working-notebooks.md`](docs/how-to-run-working-notebooks.md).
 
-### RVC (Retrieval-based Voice Conversion)
+Detailed research notes: [`docs/research/talking-head-lipsync-research.md`](docs/research/talking-head-lipsync-research.md).
 
-RVC is an advanced voice conversion framework that uses retrieval-based methods for high-quality voice cloning. It requires training a model with your reference audio first, then can convert any audio to sound like the reference voice.
+## Private assets expected
 
-- Repository: https://github.com/RVC-Project/Retrieval-based-Voice-Conversion
-- License: MIT License
+Create a private Kaggle dataset, or keep files locally outside git, with:
 
-## Talking Head Generation
-
-### Wav2Lip
-
-Wav2Lip is a lip sync expert that is remarkably robust to diverse voices, languages, and speaking styles.
-
-- Repository: https://github.com/Rudrabha/Wav2Lip
-- License: MIT
-
-### SadTalker
-
-SadTalker aims to generate talking faces from audio and a single face image.
-
-- Repository: https://github.com/OpenTalker/SadTalker
-- License: GPL-3.0
-
-## Demo
-
-We provide a demo that uses the provided avatar image and a test text to generate a cloned voice and a talking head video.
-
-**Note**: The demo uses `demo/avatar.jpg` (provided by the user) as the avatar reference. Replace `demo/text.txt` with your desired text.
-
-### Steps to run the demo:
-
-1. Install the required dependencies (see [Installation](#installation)).
-2. Run the voice cloning script to generate audio from text (ensure the audio duration matches the desired video length, see [Video Duration Constraints](#video-duration-constraints)).
-3. Use the generated audio and the avatar image to create a talking head video.
-
-## Installation
-
-### Prerequisites
-
-- Python 3.8+
-- Git
-- FFmpeg (for video processing)
-- CUDA-compatible GPU (recommended for faster processing, but CPU-only modes are available)
-
-### Cloning the repository
-
-```bash
-git clone https://github.com/arturitoCasasus/voice-video-clone-demo.git
-cd voice-video-clone-demo
+```text
+portrait.jpg
+reference_qwen_icl.wav
+reference_text.txt
 ```
 
-### Setting up the environment
+For Ditto, MuseTalk, SadTalker-only and other audio-driven talking-head notebooks:
 
-We recommend using a virtual environment or conda.
-
-#### Using venv
-
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+```text
+portrait.jpg
+audio.wav
 ```
 
-#### Installing dependencies
+For Voicebox candidate generation:
 
-Each method has its own dependencies. We provide separate requirements files.
-
-##### Tortoise-TTS
-
-```bash
-pip install tortoise-tts
+```text
+reference_voice.wav
 ```
 
-##### Coqui TTS
+For Voicebox/Chatterbox + Wav2Lip:
 
-```bash
-pip install TTS
+```text
+portrait.jpg
+voicebox_chatterbox_turbo_en.wav
 ```
 
-##### RVC
+Do **not** commit these assets. `.gitignore` excludes common audio/video outputs and private asset folders.
+
+## Kaggle setup
+
+Copy the template metadata:
 
 ```bash
-pip install rvc-python
-# You also need to install the RVC training tools separately if you want to train models
-# Follow instructions at: https://github.com/RVC-Project/Retrieval-based-Voice-Conversion
+cp kernels/qwen_sadtalker_long/kernel-metadata.template.json kernel-metadata.json
 ```
 
-##### Wav2Lip
+Then edit:
+
+```json
+"id": "<kaggle-username>/qwen-icl-sadtalker-long-demo",
+"dataset_sources": ["<kaggle-username>/<private-assets-dataset>"]
+```
+
+Push with the Kaggle CLI or your wrapper:
 
 ```bash
-# First, clone Wav2Lip repo (if not already done)
-git clone https://github.com/Rudrabha/Wav2Lip.git
-cd Wav2Lip
-# Download the pretrained model (check the repo for the latest link)
-# Example: wget https://iiitaphyd-my.sharepoint.com/:u:/g/personal/rudrabha_iiit_ac_in/Ed8RfwqyBlVNmOubq6VukBsB6Xe7aKJxWgZQZ6y6vYgJcQ?download=1 -O wav2lip.pth
-# Then install requirements
-pip install -f https://download.pytorch.org/whl/torch_stable.html torch torchvision
-pip install -r requirements.txt
-cd ..
+kaggle kernels push
 ```
 
-##### SadTalker
+Recommended accelerator: GPU. The pipeline was tested with a Kaggle **Tesla P100** using explicit PyTorch `cu121` wheels.
+
+## Important implementation notes
+
+### Qwen ICL voice cloning
+
+Use exact reference text:
+
+```python
+model.generate_voice_clone(
+    text=TARGET_TEXT,
+    language="English",
+    ref_audio="reference_qwen_icl.wav",
+    ref_text=reference_text,
+    x_vector_only_mode=False,
+)
+```
+
+`x_vector_only_mode=False` requires `ref_text`. The transcript should match the reference audio closely.
+
+### SadTalker on modern Kaggle
+
+SadTalker is old enough that modern Kaggle needs compatibility patches. The notebooks/scripts include fixes for:
+
+- PyTorch/P100 compatibility.
+- `torchvision.transforms.functional_tensor` removal.
+- removed NumPy aliases such as `np.float`, `np.int`, `np.bool`.
+- stricter NumPy scalar handling in SadTalker face alignment.
+
+### Avoid GFPGAN for long clips
+
+`--enhancer gfpgan` may work for short clips, but can run out of memory for ~1 minute videos. The long notebook disables it by default.
+
+### Recode output video
+
+Some generated MP4s may use `mpeg4` and display incorrectly in chat apps. Recode to H.264/yuv420p:
 
 ```bash
-# Clone SadTalker repo
-git clone https://github.com/OpenTalker/SadTalker.git
-cd SadTalker
-# Download pretrained models (check the repo for links)
-# Example: wget https://github.com/OpenTalker/SadTalker/releases/download/v0.0.2-rc/mapper.pth
-#          wget https://github.com/OpenTalker/SadTalker/releases/download/v0.0.2-rc/checkpoint.pth
-pip install -r requirements.txt
-cd ..
+ffmpeg -y -i input.mp4 \
+  -c:v libx264 -pix_fmt yuv420p -profile:v high -level 4.1 \
+  -crf 23 -preset veryfast \
+  -c:a aac -b:a 128k -movflags +faststart \
+  output_h264.mp4
 ```
 
-## Usage
+## Repository layout
 
-### Voice Cloning with Tortoise-TTS
-
-```bash
-# From the root of this repository
-python voice_cloning/tortoise_tts_clone.py --text "Your text here." --output audio/tortoise_output.wav --reference_wav "path/to/reference/speaker.wav"
+```text
+demo/                         Safe placeholder assets/text only
+notebooks/                    Functional Kaggle notebooks
+kernels/voicebox_candidates/  Voice candidate generation script + metadata template
+kernels/voicebox_chatterbox_wav2lip/  Voicebox audio + Wav2Lip script + metadata template
+kernels/qwen_icl_wav2lip/     Qwen ICL + Wav2Lip script + metadata template
+kernels/ditto_exp065/         Best Ditto talking-head script + metadata template
+kernels/musetalk_fullfix/     Working MuseTalk v1.5 script + metadata template
+kernels/qwen_sadtalker_long/  Kaggle script + metadata template
+docs/how-to-run-working-notebooks.md  Run guide for all working notebooks
+docs/research/                Research notes from working runs
+docs/lessons-learned.md       Practical notes from real runs
+voice_cloning/                Older local examples
+video_generation/             Older local examples
 ```
 
-### Voice Cloning with Coqui TTS
+## Safety and consent
 
-```bash
-python voice_cloning/coqui_tts_clone.py --text "Your text here." --output audio/coqui_output.wav --speaker_wav "path/to/reference/speaker.wav"
-```
-
-### Voice Cloning with RVC
-
-```bash
-# Note: This requires a pre-trained RVC model. You must first train a model using your reference audio.
-# See https://github.com/RVC-Project/Retrieval-based-Voice-Conversion for training instructions.
-python voice_cloning/rvc_clone.py --text "Your text here." --output audio/rvc_output.wav --reference_wav "path/to/reference/speaker.wav" --model_path "path/to/trained/model.pth" [--index_path "path/to/index/file"] [--f0_up_key 0] [--index_rate 0.75]
-```
-
-### Talking Head Generation with Wav2Lip
-
-```bash
-python video_generation/wav2lip_inference.py --face "demo/avatar.jpg" --audio "audio/tortoise_output.wav" --output "results/wav2lip_output.mp4"
-```
-
-### Talking Head Generation with SadTalker
-
-```bash
-python video_generation/sadtalker_inference.py --driven_audio "audio/tortoise_output.wav" --source_image "demo/avatar.jpg" --output_dir "results/sadtalker_output/"
-```
-
-## Demo Files
-
-- `demo/avatar.jpg`: The provided avatar image to be used as the talking head.
-- `demo/text.txt`: Sample text for voice cloning (edit to your desired content).
-
-## Video Duration Constraints
-
-The final video must be between **3 and 10 minutes** long.
-
-To achieve this:
-
-1. **Adjust the input text length**: The speaking rate varies, but a rough estimate is 130-150 words per minute for clear speech. For a 3‑minute video aim for ~400 words; for a 10‑minute video aim for ~1300 words.
-2. **Control the TTS generation**:
-   - With Tortoise-TTS, you can generate longer passages directly.
-   - With Coqui TTS (XTTS v2), you can also pass long texts.
-   - With RVC, you can generate base audio with any TTS method and then convert it.
-3. **If needed, concatenate audio clips**: Generate multiple clips and concatenate them with FFmpeg or Audacity to reach the exact duration.
-4. **Trim or loop**: If the generated audio is too short, you can loop a segment (with slight variations to avoid monotony) or add pauses. If too long, trim to the desired length.
-5. **Verify duration**: Use `ffprobe` to check audio length:
-   ```bash
-   ffprobe -i audio/output.wav -show_entries format=duration -v quiet -of csv="p=0"
-   ```
-   Then ensure the talking‑head video will have the same duration (the tools generally preserve audio length).
-
-### Example: Generating a ~5‑minute narration (~650 words)
-
-Edit `demo/text.txt` with your desired script (around 650 words). Then run the cloning script and proceed to video generation.
-
-## Getting Good Reference Audio
-
-For best voice cloning results, follow these guidelines for your reference audio:
-
-1. **Quality**: Use a clean recording with minimal background noise, reverberation, or distortions.
-2. **Length**: Provide at least 10-30 seconds of clear speech. Longer durations (1-2 minutes) can improve results for Tortoise-TTS and RVC.
-3. **Consistency**: The speaker should maintain a consistent tone, pace, and vocal characteristics throughout the recording.
-4. **Content**: Use natural speech (reading a paragraph, speaking freely) rather than isolated words or sentences.
-5. **Format**: Use WAV format with 16-bit or 24-bit depth and sample rate of 22050Hz or higher (most tools will resample as needed).
-6. **Avoid**: Music, multiple speakers, excessive laughter, shouting, or whispering unless you specifically want to clone those styles.
-
-### Obtaining Reference Audio
-
-- Extract from existing clean recordings (podcasts, audiobooks, lectures)
-- Record specifically for this purpose using a good microphone in a quiet environment
-- Use online sources with clear speech (ensure you have rights to use the voice)
-
-## Notes
-
-- This repository is for educational purposes. Always respect privacy and copyright when using someone's voice or image.
-- The quality of the output depends on the quality of the input data and the pretrained models used.
-- For best results, use a clear front-facing photo (the provided avatar) and a clean audio recording.
-- RVC requires training a model with your reference audio first, which can take time but yields high-quality results.
+Only clone or animate voices/faces you own or have explicit permission to use. Keep private datasets and kernels private when processing identifiable people.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Tortoise-TTS: https://github.com/neonbjb/tortoise-tts
-- Coqui TTS: https://github.com/coqui-ai/TTS
-- Wav2Lip: https://github.com/Rudrabha/Wav2Lip
-- SadTalker: https://github.com/OpenTalker/SadTalker
-- RVC: https://github.com/RVC-Project/Retrieval-based-Voice-Conversion
+MIT. See [`LICENSE`](LICENSE).
